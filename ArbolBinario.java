@@ -17,48 +17,149 @@ public class ArbolBinario {
         }
 
         else{
-            Nodo aux = raiz;
+            Nodo actual = raiz;
+            Nodo padre = null;
             // Recorre el árbol para encontrar la posición correcta
-            while (aux != null){
-                n.padre = aux; // Guarda referencia al nodo padre actual
-                // Si el índice del nuevo nodo es mayor o igual, ve a la derecha
-                if(n.indice >= aux.indice){
-                    aux = aux.derecha;
-                }
-                // Si es menor, ve a la izquierda
-                else {
-                    aux = aux.izquierda;
-                }
-            }
-            // Una vez encontrada la posición (aux es vacio), se conecta el nuevo nodo al árbol
-            if (n.indice < n.padre.indice){
-                n.padre.izquierda = n;
-            }
-            else{
-                n.padre.derecha = n;
-            }
+        while (actual != null) {
+        padre = actual;
+        if (i < actual.indice) {
+            actual = actual.izquierda;
+        } else {
+            actual = actual.derecha;
+    }
+}
+
+        n.padre = padre;
+        if (i < padre.indice) {
+        padre.izquierda = n;
+        } else {
+        padre.derecha = n;
+}
         }
     }
 
-    public void buscarNodos(){
-
+    // Métodos de los recorridos del Arbol
+    public void mostrarInOrden() {
+        inOrden(raiz);
+        System.out.println();
+    }
+    
+    public void inOrden(Nodo nodo) {
+        if (nodo != null) {
+        inOrden(nodo.getIzquierdo());
+        System.out.print(nodo.getContenido() + " ");
+        inOrden(nodo.getDerecho());
+        }
     }
 
-    public void determinarAlturaArbol(){
-        
+    public void mostrarPreOrden() {
+        preOrden(raiz);
+        System.out.println();
     }
 
-    public void InOrden(){
-
+    public void preOrden(Nodo nodo) {
+        if (nodo != null) {
+        System.out.print(nodo.getContenido() + " ");
+        preOrden(nodo.getIzquierdo());
+        preOrden(nodo.getDerecho());
+        }
     }
 
-    public void PreOrden(){
-
+    public void mostrarPostOrden() {
+        postOrden(raiz);
+        System.out.println();
     }
 
-    public void PostOrden(){
-
+    private void postOrden(Nodo nodo) {
+        if (nodo != null) {
+        postOrden(nodo.getIzquierdo());
+        postOrden(nodo.getDerecho());
+        System.out.print(nodo.getContenido() + " ");
+        }
     }
+
+    // Método para buscar un nodo en el árbol
+    public boolean contiene(int valor) {
+        return buscarNodo(valor) != null;
+    }
+
+    public Nodo buscarNodo(int valor) {
+        return buscarNodoRec(raiz, valor);
+    }
+    
+    private Nodo buscarNodoRec(Nodo nodo, int valor) {
+        if (nodo == null) return null;
+        if (nodo.getIndice() == valor) return nodo;
+    
+        if (valor < nodo.getIndice())
+            return buscarNodoRec(nodo.getIzquierdo(), valor);
+        else
+            return buscarNodoRec(nodo.getDerecho(), valor);
+    }
+
+    // Metodo para Mostrar la Altura del Arbol
+    public int determinarAlturaArbol(){
+        return alturaRec(raiz);
+    }
+
+    private int alturaRec(Nodo nodo) {
+        if (nodo == null) return 0;
+        return 1 + Math.max(alturaRec(nodo.getIzquierdo()), alturaRec(nodo.getDerecho()));
+    }
+
+    //Metodo para Contar Nodos de las Hojas
+    public int contarHojas() {
+        return contarHojasRec(raiz);
+    }
+            
+    private int contarHojasRec(Nodo nodo) {
+        if (nodo == null) return 0;
+        if (nodo.getIzquierdo() == null && nodo.getDerecho() == null) return 1;
+        return contarHojasRec(nodo.getIzquierdo()) + contarHojasRec(nodo.getDerecho());
+    }
+
+    //Metodo para Borrar un Nodo
+    public void eliminarNodo(int valor) {
+        raiz = eliminarRec(raiz, valor);
+    }
+    
+    private Nodo eliminarRec(Nodo nodo, int valor) {
+        if (nodo == null) return null;
+    
+        if (valor < nodo.getIndice()) {
+            nodo.izquierda = eliminarRec(nodo.izquierda, valor);
+        } else if (valor > nodo.getIndice()) {
+            nodo.derecha = eliminarRec(nodo.derecha, valor);
+        } else {
+            // Caso 1: sin hijos
+            if (nodo.izquierda == null && nodo.derecha == null) {
+                return null;
+            }
+            // Caso 2: un hijo
+            if (nodo.izquierda == null) return nodo.derecha;
+            if (nodo.derecha == null) return nodo.izquierda;
+    
+            // Caso 3: dos hijos
+            Nodo sucesor = encontrarMinimo(nodo.derecha);
+            nodo.indice = sucesor.indice;
+            nodo.contenido = sucesor.contenido;
+            nodo.derecha = eliminarRec(nodo.derecha, sucesor.indice);
+        }
+    
+        return nodo;
+    }
+    
+    private Nodo encontrarMinimo(Nodo nodo) {
+        while (nodo.izquierda != null) {
+            nodo = nodo.izquierda;
+        }
+        return nodo;
+    }
+
+        // Vacíar el Arbol
+        public void limpiar() {
+        raiz = null;
+        }
 
     public Nodo getRaiz(){
         return raiz;

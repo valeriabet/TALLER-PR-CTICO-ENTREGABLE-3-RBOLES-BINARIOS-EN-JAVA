@@ -13,4 +13,20 @@ public class Nodo {
         this.derecha = null; //hijo de la derecha vacio
         this.contenido = null; //contenido vacio al inicio
     }
+
+    public int getIndice() {
+        return indice;
+    }
+    
+    public Object getContenido() {
+        return contenido;
+    }
+    
+    public Nodo getIzquierdo() {
+        return izquierda;
+    }
+    
+    public Nodo getDerecho() {
+        return derecha;
+    }
 }
